@@ -1,15 +1,16 @@
 clear
 clc
 
-iter = 1;
-itcount=zeros(iter,1);
-disprob=zeros(iter,1);
+iter = 1000;
+itcount = zeros(iter,1);
+wtarg = zeros(3,iter);
+w = zeros(3,iter);
 
 for i=1:iter
     % creating datasets
-    dsize = 10;
-    y = -1+(1+1)*rand(dsize,1);
-    x = -1+(1+1)*rand(dsize,1);
+    N = 100;
+    y = -1+(1+1)*rand(N,1);
+    x = -1+(1+1)*rand(N,1);
     dataset = [x y];
     
     % creating points to define target line
@@ -20,13 +21,14 @@ for i=1:iter
     targcoef = polyfit(targxs,targys,1);
     x1 = linspace(-1,1);
     y1 = polyval(targcoef,x1);
+    wtarg(:,i) = [-targcoef(2); -targcoef(1); 1];
     
     % mapping point according to target function
-    ftarg=zeros(dsize,1);
+    ftarg=zeros(N,1);
 %     datapos = [];
 %     dataneg = [];
     
-    for j=1:dsize
+    for j=1:N
         tresy = polyval(targcoef,x(j,1));
         if y(j,1)>tresy
             ftarg(j,1) = 1;
@@ -44,8 +46,7 @@ for i=1:iter
 %     plot(dataneg(:,1),dataneg(:,2),'*','Color','r')
 %     plot(x1,y1)
     
-    wi = zeros(3,1);
-    miscset = (1:dsize);
+    miscset = (1:N);
     
     while size(miscset,2)>=1
         itcount(i,1) = itcount(i,1)+1;
@@ -53,42 +54,22 @@ for i=1:iter
         % randomly choose a missclassified point and try to correct it
         misclabel = datasample(miscset,1);
         xcor = [1; dataset(misclabel,1); dataset(misclabel,2)];
-        wi = wi + ftarg(misclabel,1)*xcor;
+        w(:,i) = w(:,i) + ftarg(misclabel,1)*xcor;
         
         % re-verify missclassified set
         miscset = [];
         
-        for j=1:dsize
+        for j=1:N
             xver = [1; dataset(j,1); dataset(j,2)];
             
-            if sign(dot(wi,xver)) ~= ftarg(j,1)
+            if sign(w(:,i)'*xver) ~= ftarg(j,1)
                 miscset = [miscset j];
             end
         end
     end
     
-%     % missing: evaluate area difference with integral for rectangular 
-%     % booundaries and in case the lines cross inside the domain
-%     
-%     % calculating area difference between target function and chosen
-%     % hypothesis
-%     polarea1 = polyint(targcoef);
-%     area1 = polyval(polarea1,1) - polyval(polarea1,-1);
-%     
-%     hypcoef = [-wi(2)/wi(3) -wi(1)/wi(3)];
-%     polarea2 = polyint(hypcoef);
-%     area2 = polyval(polarea2,1) - polyval(polarea2,-1);
-%     
-%     targcoef
-%     hypcoef
-%     
-% %     area1
-% %     area2
-%     
-%     areadiff = abs(area1-area2)
-%     disprob = areadiff/4;
-%     
 %     % plotting chosen hypothesis
+%     hypcoef = [-w(2,i)/w(3,i) -w(1,i)/w(3,i)];
 %     x2 = linspace(-1,1);
 %     y2 = polyval(hypcoef,x2);
 %     
@@ -97,5 +78,24 @@ for i=1:iter
     
 end
 
-answer1 = mean(itcount);
-answer2 = mean(disprob);
+Eout = zeros(iter,1);
+
+for i = 1:iter
+    dsize2 = 1000;
+    x_02 = ones(dsize2,1);
+    x_12 = -1+(1+1)*rand(dsize2,1);
+    x_22 = -1+(1+1)*rand(dsize2,1);
+    
+    X2 = [x_02 x_12 x_22];
+    
+    for j=1:dsize2
+        if sign(w(:,i)'*X2(j,:)') ~= sign(wtarg(:,i)'*X2(j,:)')
+            Eout(i) = Eout(i)+1;
+        end
+    end
+    
+    Eout(i) = Eout(i)/dsize2;
+end
+
+answer1 = mean(itcount)
+answer2 = mean(Eout)
