@@ -3,17 +3,16 @@ clc
 
 iter = 1000;
 itcount=zeros(iter,1);
-disprob=zeros(iter,1);
 wtarg = zeros(3,iter);
 w = zeros(3,iter);
 Ein = zeros(iter,1);
 
 for i=1:iter
     % creating datasets
-    dsize = 100;
-    x_0 = ones(dsize,1);
-    x_1 = -1+(1+1)*rand(dsize,1);
-    x_2 = -1+(1+1)*rand(dsize,1);
+    N = 100;
+    x_0 = ones(N,1);
+    x_1 = -1+(1+1)*rand(N,1);
+    x_2 = -1+(1+1)*rand(N,1);
     
     dataset = [x_1 x_2];
     X = [x_0 x_1 x_2];
@@ -29,11 +28,11 @@ for i=1:iter
     wtarg(:,i) = [-targcoef(2); -targcoef(1); 1];
     
     % mapping point according to target function
-    y=zeros(dsize,1);
+    y=zeros(N,1);
 %     datapos = [];
 %     dataneg = [];
     
-    for j=1:dsize
+    for j=1:N
         tresy = polyval(targcoef,x_1(j,1));
         if x_2(j,1)>tresy
             y(j,1) = 1;
@@ -63,8 +62,8 @@ for i=1:iter
 %     plot(x2,y2,'Color','r')
 %     hold off
     
-    for j=1:dsize
-        if sign(dot(w(:,i)',X(j,:))) ~= y(j,1)
+    for j=1:N
+        if sign(w(:,i)'*X(j,:)') ~= y(j,1)
             Ein(i,1) = Ein(i,1)+1;
         end
     end    
@@ -83,12 +82,12 @@ for i = 1:iter
     X2 = [x_02 x_12 x_22];
     
     for j=1:dsize2
-        if sign(dot(w(:,i)',X2(j,:))) ~= sign(dot(wtarg(:,i)',X2(j,:)))
+        if sign(w(:,i)'*X2(j,:)') ~= sign(wtarg(:,i)'*X2(j,:)')
             Eout(i,1) = Eout(i,1)+1;
         end
     end   
     
-    Eout(i,1) = Eout(i,1)/1000;
+    Eout(i,1) = Eout(i,1)/dsize2;
 end
 
 answer1 = mean(Ein)
