@@ -43,10 +43,10 @@ X_test = feat_test(:,2:3);
 
 model = svmtrain(y_train, X_train, '-t 1 -d 5 -g 1 -r 1 -c 0.0001');
 
-[predicted_labels, accuracy2, ~] = svmpredict(y_test, X_test, model);
+[predicted_labels, accuracy1, ~] = svmpredict(y_test, X_test, model);
 
-E_out = 100 - accuracy2(1)
+E_out = 100 - accuracy1(1)
 
-[predicted_labels, accuracy1, ~] = svmpredict(y_train, X_train, model);
+[predicted_labels, accuracy2, ~] = svmpredict(y_train, X_train, model);
 
-E_in = 100 - accuracy1(1)
+E_in = 100 - accuracy2(1)
