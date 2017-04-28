@@ -21,7 +21,7 @@ feat_test = feat_test';
 for i=1:10
     
     ref_dig = i-1; %vs all
-
+    
     for j=1:size(feat_train,1)
         if feat_train(j,1) == ref_dig
             feat_train(j,4) = 1;
@@ -32,14 +32,15 @@ for i=1:10
 
     y_train = feat_train(:,4);
     x0_train = ones(size(feat_train,1),1);
-    X_train = [x0_train feat_train(:,2:3)];
+    Z_train = [x0_train feat_train(:,2) feat_train(:,3)...
+        feat_train(:,2).*feat_train(:,3) feat_train(:,2).^2 feat_train(:,3).^2];
 
-    X_sol = (X_train'*X_train+lambda*eye(3))\X_train';
+    X_sol = (Z_train'*Z_train+lambda*eye(6))\Z_train';
     w = X_sol*y_train;
     
-    for j=1:size(X_train,1)
-        if sign(w'*X_train(j,:)') ~= y_train(j)
-            E_in(i) = E_in(i)+1/size(X_train,1);
+    for j=1:size(Z_train,1)
+        if sign(w'*Z_train(j,:)') ~= y_train(j)
+            E_in(i) = E_in(i)+1/size(Z_train,1);
         end
     end
     
@@ -53,11 +54,12 @@ for i=1:10
 
     y_test = feat_test(:,4);
     x0_test = ones(size(feat_test,1),1);
-    X_test = [x0_test feat_test(:,2:3)];
+    Z_test = [x0_test feat_test(:,2) feat_test(:,3)...
+        feat_test(:,2).*feat_test(:,3) feat_test(:,2).^2 feat_test(:,3).^2];
     
-    for j=1:size(X_test,1)
-        if sign(w'*X_test(j,:)') ~= y_test(j)
-            E_out(i) = E_out(i)+1/size(X_test,1);
+    for j=1:size(Z_test,1)
+        if sign(w'*Z_test(j,:)') ~= y_test(j)
+            E_out(i) = E_out(i)+1/size(Z_test,1);
         end
     end
     
