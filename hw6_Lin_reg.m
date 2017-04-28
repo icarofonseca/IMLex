@@ -1,5 +1,4 @@
-clear
-clc
+clear; clc;
 
 % read data set
 fileID = fopen('in.dta','r');
@@ -32,7 +31,7 @@ w = phi_cross*y_in;
 E_in = 0;
 
 for i=1:count
-    if sign(dot(w,phi_in(i,:))) ~= y_in(i)
+    if sign(w'*phi_in(i,:)') ~= y_in(i)
         E_in = E_in+1;
     end
 end
@@ -65,7 +64,7 @@ nltransf_out = [phi_0_out phi_1_out phi_2_out phi_3_out phi_4_out...
 E_out = 0;
 
 for i=1:count1
-    if sign(dot(w,nltransf_out(i,:))) ~= y_out(i)
+    if sign(w'*nltransf_out(i,:)') ~= y_out(i)
         E_out = E_out+1;
     end
 end
