@@ -44,6 +44,7 @@ X_test = feat_test(:,2:3);
 E_in = zeros(1, 5);
 E_out = zeros(1, 5);
 
+%libsvm command
 model_1 = svmtrain(y_train, X_train, '-t 2 -g 1 -c 0.01 -q');
 model_2 = svmtrain(y_train, X_train, '-t 2 -g 1 -c 1 -q');
 model_3 = svmtrain(y_train, X_train, '-t 2 -g 1 -c 100 -q');

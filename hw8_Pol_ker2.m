@@ -41,6 +41,7 @@ end
 y_test = feat_test(:,4);
 X_test = feat_test(:,2:3);
 
+%libsvm command
 model = svmtrain(y_train, X_train, '-t 1 -d 5 -g 1 -r 1 -c 0.0001');
 
 [predicted_labels, accuracy1, ~] = svmpredict(y_test, X_test, model);

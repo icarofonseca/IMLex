@@ -89,6 +89,7 @@ for i=1:iter
     w_pla(:,i) = wi;
     
     Xsvm = [x_1 x_2];
+    %matlab command
     svmStruct = svmtrain(Xsvm,y,'boxconstraint',Inf,'method','QP',...
         'ShowPlot',false,'autoscale','off');
     
