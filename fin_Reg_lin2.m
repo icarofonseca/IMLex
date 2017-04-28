@@ -35,8 +35,8 @@ for i=1:10
     Z_train = [x0_train feat_train(:,2) feat_train(:,3)...
         feat_train(:,2).*feat_train(:,3) feat_train(:,2).^2 feat_train(:,3).^2];
 
-    X_sol = (Z_train'*Z_train+lambda*eye(6))\Z_train';
-    w = X_sol*y_train;
+    Z_sol = (Z_train'*Z_train+lambda*eye(6))\Z_train';
+    w = Z_sol*y_train;
     
     for j=1:size(Z_train,1)
         if sign(w'*Z_train(j,:)') ~= y_train(j)
