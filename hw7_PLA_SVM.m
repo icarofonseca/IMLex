@@ -118,7 +118,6 @@ for i = 1:iter
     x_22 = -1+(1+1)*rand(N2,1);
     
     X2 = [x_02 x_12 x_22];
-    X21 = [x_12 x_22];
     
     for j=1:N2
         if sign(dot(w_pla(:,i)',X2(j,:))) ~= sign(dot(wtarg(:,i)',X2(j,:)))
