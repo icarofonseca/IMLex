@@ -1,5 +1,4 @@
-clear
-clc
+clear; clc;
 
 iter = 1;
 w_pla = zeros(3,iter);
@@ -9,16 +8,16 @@ sv_no = zeros(1,iter);
 
 for i=1:iter
     % creating datasets
-    dsize = 100;
+    N = 100;
     
     side1 = 0;
     side2 = 0;
     
     while side1==0||side2==0
         
-        x_0 = ones(dsize,1);
-        x_1 = -1+(1+1)*rand(dsize,1);
-        x_2 = -1+(1+1)*rand(dsize,1);
+        x_0 = ones(N,1);
+        x_1 = -1+(1+1)*rand(N,1);
+        x_2 = -1+(1+1)*rand(N,1);
         
         dataset = [x_1 x_2];
         X = [x_0 x_1 x_2];
@@ -34,11 +33,11 @@ for i=1:iter
         wtarg(:,i) = [-targcoef(2); -targcoef(1); 1];
         
         % mapping point according to target function
-        y=zeros(dsize,1);
+        y=zeros(N,1);
 %         datapos = [];
 %         dataneg = [];
         
-        for j=1:dsize
+        for j=1:N
             tresy = polyval(targcoef,x_1(j,1));
             if x_2(j,1)>tresy
                 y(j,1) = 1;
@@ -66,19 +65,19 @@ for i=1:iter
 %     plot(x1_targ,x2_targ)
     
     wi = zeros(3,1);
-    miscset = (1:dsize);
+    miscset = (1:N);
     
     while size(miscset,2)>=1
         % randomly choose a missclassified point and try to correct it
         misclabel = datasample(miscset,1);
-        xcor = [1; dataset(misclabel,1); dataset(misclabel,2)];
+        xcor = X(misclabel,:)';
         wi = wi + y(misclabel,1)*xcor;
         
         % re-verify missclassified set
         miscset = [];
         
-        for j=1:dsize
-            xver = [1; dataset(j,1); dataset(j,2)];
+        for j=1:N
+            xver = X(j,:)';
             
             if sign(dot(wi,xver)) ~= y(j,1)
                 miscset = [miscset j];
@@ -113,15 +112,15 @@ Eout_svm = zeros(iter,1);
 svm_wins = zeros(iter,1);
 
 for i = 1:iter
-    dsize2 = 1000;
-    x_02 = ones(dsize2,1);
-    x_12 = -1+(1+1)*rand(dsize2,1);
-    x_22 = -1+(1+1)*rand(dsize2,1);
+    N2 = 1000;
+    x_02 = ones(N2,1);
+    x_12 = -1+(1+1)*rand(N2,1);
+    x_22 = -1+(1+1)*rand(N2,1);
     
     X2 = [x_02 x_12 x_22];
     X21 = [x_12 x_22];
     
-    for j=1:dsize2
+    for j=1:N2
         if sign(dot(w_pla(:,i)',X2(j,:))) ~= sign(dot(wtarg(:,i)',X2(j,:)))
             Eout_pla(i) = Eout_pla(i)+1;
         end

@@ -1,5 +1,4 @@
-clear
-clc
+clear; clc;
 
 iter = 1000;
 itcount = zeros(iter,1);
@@ -9,9 +8,12 @@ w = zeros(3,iter);
 for i=1:iter
     % creating datasets
     N = 100;
-    y = -1+(1+1)*rand(N,1);
-    x = -1+(1+1)*rand(N,1);
-    dataset = [x y];
+    x_0 = ones(N,1);
+    x_1 = -1+(1+1)*rand(N,1);
+    x_2 = -1+(1+1)*rand(N,1);
+    
+    dataset = [x_1 x_2];
+    X = [x_0 x_1 x_2];
     
     % creating points to define target line
     targxs = -1+(1+1)*rand(2,1);
@@ -19,23 +21,23 @@ for i=1:iter
     
     % creating target function
     targcoef = polyfit(targxs,targys,1);
-    x1 = linspace(-1,1);
-    y1 = polyval(targcoef,x1);
+    x1_targ = linspace(-1,1);
+    x2_targ = polyval(targcoef,x1_targ);
     wtarg(:,i) = [-targcoef(2); -targcoef(1); 1];
     
     % mapping point according to target function
-    ftarg=zeros(N,1);
+    y=zeros(N,1);
 %     datapos = [];
 %     dataneg = [];
     
     for j=1:N
-        tresy = polyval(targcoef,x(j,1));
-        if y(j,1)>tresy
-            ftarg(j,1) = 1;
-%              datapos = [datapos; dataset(j,:)];
+        tresy = polyval(targcoef,x_1(j,1));
+        if x_2(j,1)>tresy
+            y(j,1) = 1;
+%             datapos = [datapos; dataset(j,:)];
         else
-            ftarg(j,1) = -1;
-%              dataneg = [dataneg; dataset(j,:)];
+            y(j,1) = -1;
+%             dataneg = [dataneg; dataset(j,:)];
         end
     end
     
@@ -44,7 +46,7 @@ for i=1:iter
 %     ylim([-1 1])
 %     hold on
 %     plot(dataneg(:,1),dataneg(:,2),'*','Color','r')
-%     plot(x1,y1)
+%     plot(x1_targ,x2_targ)
     
     miscset = (1:N);
     
@@ -53,16 +55,16 @@ for i=1:iter
         
         % randomly choose a missclassified point and try to correct it
         misclabel = datasample(miscset,1);
-        xcor = [1; dataset(misclabel,1); dataset(misclabel,2)];
-        w(:,i) = w(:,i) + ftarg(misclabel,1)*xcor;
+        xcor = X(misclabel,:)';
+        w(:,i) = w(:,i) + y(misclabel,1)*xcor;
         
         % re-verify missclassified set
         miscset = [];
         
         for j=1:N
-            xver = [1; dataset(j,1); dataset(j,2)];
+            xver = X(j,:)';
             
-            if sign(w(:,i)'*xver) ~= ftarg(j,1)
+            if sign(w(:,i)'*xver) ~= y(j,1)
                 miscset = [miscset j];
             end
         end
@@ -81,20 +83,20 @@ end
 Eout = zeros(iter,1);
 
 for i = 1:iter
-    dsize2 = 1000;
-    x_02 = ones(dsize2,1);
-    x_12 = -1+(1+1)*rand(dsize2,1);
-    x_22 = -1+(1+1)*rand(dsize2,1);
+    N2 = 1000;
+    x_02 = ones(N2,1);
+    x_12 = -1+(1+1)*rand(N2,1);
+    x_22 = -1+(1+1)*rand(N2,1);
     
     X2 = [x_02 x_12 x_22];
     
-    for j=1:dsize2
+    for j=1:N2
         if sign(w(:,i)'*X2(j,:)') ~= sign(wtarg(:,i)'*X2(j,:)')
             Eout(i) = Eout(i)+1;
         end
     end
     
-    Eout(i) = Eout(i)/dsize2;
+    Eout(i) = Eout(i)/N2;
 end
 
 answer1 = mean(itcount)
