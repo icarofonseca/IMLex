@@ -89,14 +89,9 @@ for i = 1:iter
     x_22 = -1+(1+1)*rand(N2,1);
     
     X2 = [x_02 x_12 x_22];
+    y2 = sign(X2*wtarg(:,i));
     
-    for j=1:N2
-        if sign(w(:,i)'*X2(j,:)') ~= sign(wtarg(:,i)'*X2(j,:)')
-            Eout(i) = Eout(i)+1;
-        end
-    end
-    
-    Eout(i) = Eout(i)/N2;
+    Eout(i) = class_err(X2,w(:,i),y2);
 end
 
 answer1 = mean(itcount)

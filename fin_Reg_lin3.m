@@ -28,14 +28,7 @@ Z_train = [x0_train feat_train(:,2) feat_train(:,3)...
 Z_sol = (Z_train'*Z_train+lambda*eye(6))\Z_train';
 w = Z_sol*y_train;
 
-E_in = 0;
-
-for i=1:size(Z_train,1)
-    if sign(w'*Z_train(i,:)') ~= y_train(i)
-        E_in = E_in+1/size(Z_train,1);
-    end
-end
-
+E_in = class_err(Z_train,w,y_train);
 E_in
 
 % reading test set
@@ -59,12 +52,5 @@ x0_test = ones(size(feat_test,1),1);
 Z_test = [x0_test feat_test(:,2) feat_test(:,3)...
     feat_test(:,2).*feat_test(:,3) feat_test(:,2).^2 feat_test(:,3).^2];
 
-E_out = 0;
-
-for i=1:size(Z_test,1)
-    if sign(w'*Z_test(i,:)') ~= y_test(i)
-        E_out = E_out+1/size(Z_test,1);
-    end
-end
-
+E_out = class_err(Z_test,w,y_test);
 E_out
