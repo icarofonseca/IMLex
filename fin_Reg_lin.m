@@ -37,11 +37,8 @@ for i=1:10
     X_sol = (X_train'*X_train+lambda*eye(3))\X_train';
     w = X_sol*y_train;
     
-    for j=1:size(X_train,1)
-        if sign(w'*X_train(j,:)') ~= y_train(j)
-            E_in(i) = E_in(i)+1/size(X_train,1);
-        end
-    end
+    y_lin_in = sign(X_train*w);
+    E_in(i) = 1-sum(y_train == y_lin_in)/size(X_train,1);
     
     for j=1:size(feat_test,1)
         if feat_test(j,1) == ref_dig
@@ -55,11 +52,8 @@ for i=1:10
     x0_test = ones(size(feat_test,1),1);
     X_test = [x0_test feat_test(:,2:3)];
     
-    for j=1:size(X_test,1)
-        if sign(w'*X_test(j,:)') ~= y_test(j)
-            E_out(i) = E_out(i)+1/size(X_test,1);
-        end
-    end
+    y_lin_in = sign(X_test*w);
+    E_out(i) = 1-sum(y_test == y_lin_in)/size(X_test,1);
     
 end
 
