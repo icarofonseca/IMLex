@@ -38,11 +38,7 @@ for i=1:10
     Z_sol = (Z_train'*Z_train+lambda*eye(6))\Z_train';
     w = Z_sol*y_train;
     
-    for j=1:size(Z_train,1)
-        if sign(w'*Z_train(j,:)') ~= y_train(j)
-            E_in(i) = E_in(i)+1/size(Z_train,1);
-        end
-    end
+    E_in(i) = class_err(Z_train,w,y_train);
     
     for j=1:size(feat_test,1)
         if feat_test(j,1) == ref_dig
@@ -57,11 +53,7 @@ for i=1:10
     Z_test = [x0_test feat_test(:,2) feat_test(:,3)...
         feat_test(:,2).*feat_test(:,3) feat_test(:,2).^2 feat_test(:,3).^2];
     
-    for j=1:size(Z_test,1)
-        if sign(w'*Z_test(j,:)') ~= y_test(j)
-            E_out(i) = E_out(i)+1/size(Z_test,1);
-        end
-    end
+    E_out(i) = class_err(Z_test,w,y_test);
     
 end
 

@@ -65,31 +65,25 @@ for i=1:iter
     
     for j=1:dsize
         if sign(dot(w(:,i)',X(j,:))) ~= sign(dot(wa,X(j,:)))
-            Ein(i,1) = Ein(i,1)+1;
+            Ein(i,1) = Ein(i,1)+1/dsize;
         end
         
         if sign(dot(w(:,i)',X(j,:))) ~= sign(dot(wb,X(j,:)))
-            Ein(i,2) = Ein(i,2)+1;
+            Ein(i,2) = Ein(i,2)+1/dsize;
         end
         
         if sign(dot(w(:,i)',X(j,:))) ~= sign(dot(wc,X(j,:)))
-            Ein(i,3) = Ein(i,3)+1;
+            Ein(i,3) = Ein(i,3)+1/dsize;
         end
         
         if sign(dot(w(:,i)',X(j,:))) ~= sign(dot(wd,X(j,:)))
-            Ein(i,4) = Ein(i,4)+1;
+            Ein(i,4) = Ein(i,4)+1/dsize;
         end
         
         if sign(dot(w(:,i)',X(j,:))) ~= sign(dot(we,X(j,:)))
-            Ein(i,5) = Ein(i,5)+1;
+            Ein(i,5) = Ein(i,5)+1/dsize;
         end
-    end    
-    
-    Ein(i,1) = Ein(i,1)/dsize;
-    Ein(i,2) = Ein(i,2)/dsize;
-    Ein(i,3) = Ein(i,3)/dsize;
-    Ein(i,4) = Ein(i,4)/dsize;
-    Ein(i,5) = Ein(i,5)/dsize;
+    end
 end
 
 Eina = mean(Ein(:,1))
