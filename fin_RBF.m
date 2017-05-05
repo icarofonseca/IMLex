@@ -48,7 +48,7 @@ for i=1:iter
         S_k_prev = S_k;
         S_k = cell(K,1);
         
-        %assigning points to clusters
+        % assigning points to clusters
         for j=1:N
             dist_min = Inf;
             for k=1:K
